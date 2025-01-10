@@ -13,7 +13,7 @@ module fp_int2float(
    always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             float_out1 <= 16'b0;
-            exception_flags <= 5'b0;
+            exceptions <= 5'b0;
         end else begin
             float_out1 <= float_out;
           if(in_int>512)

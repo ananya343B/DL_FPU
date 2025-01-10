@@ -18,10 +18,10 @@ module dlfloat16_add_sub(input [15:0] a, input [15:0] b,input op,output reg [19:
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             c_out <= 20'b0;
-            exception_flags <= 5'b0;
+            exceptions <= 5'b0;
         end else begin
             c_out <= c_add;
-		exception_flags <= {invalid, inexact, overflow, underflow, div_zero};
+		exceptions <= {invalid, inexact, overflow, underflow, div_zero};
         end
     end
     always@(*) begin

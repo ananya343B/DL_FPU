@@ -12,7 +12,7 @@ module dlfloat16_add_sub(input [15:0] a, input [15:0] b,input op,output reg [19:
     reg    [8:0]  renorm_shift_80;
     reg signed [5:0] renorm_exp_80;
     reg signed [5:0] larger_expo_neg;
-  reg invalid, inexact, overflow, underflow, zero;
+  reg invalid, inexact, overflow, underflow, div_zero;
 
   
     always @(posedge clk or negedge rst_n) begin
@@ -21,7 +21,7 @@ module dlfloat16_add_sub(input [15:0] a, input [15:0] b,input op,output reg [19:
             exception_flags <= 5'b0;
         end else begin
             c_out <= c_add;
-            exception_flags <= {invalid, inexact, overflow, underflow, zero};
+		exception_flags <= {invalid, inexact, overflow, underflow, div_zero};
         end
     end
     always@(*) begin
@@ -29,7 +29,7 @@ module dlfloat16_add_sub(input [15:0] a, input [15:0] b,input op,output reg [19:
 	    inexact = 1'b0;
 	    overflow = 1'b0;
 	    underflow = 1'b0;
-	    zero = 1'b0;
+	    div_zero = 1'b0;
         //stage 1
      	     e1_80 = a[14:9];
     	     e2_80 = b[14:9];
@@ -217,7 +217,7 @@ module dlfloat16_add_sub(input [15:0] a, input [15:0] b,input op,output reg [19:
                Final_expo_80 =  Larger_exp_80 + renorm_exp_80;
       
       	       if(Final_expo_80 == 6'b0) begin
-		       zero =1'b1;
+		       underflow =1'b1;
                      c_add=16'b0;
                end
                else if( Final_expo_80 == 63) begin

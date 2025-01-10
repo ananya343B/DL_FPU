@@ -1,4 +1,4 @@
-module dlfloat16_add_sub(input [15:0] a, input [15:0] b,input op,output reg [19:0] c_out, input clk);
+module dlfloat16_add_sub(input [15:0] a, input [15:0] b,input op,output reg [19:0] c_out, input clk,input rst_n, output [4:0] exceptions);
    
   reg [19:0] c_add;
     reg    [5:0] Num_shift_80; 
@@ -12,12 +12,24 @@ module dlfloat16_add_sub(input [15:0] a, input [15:0] b,input op,output reg [19:
     reg    [8:0]  renorm_shift_80;
     reg signed [5:0] renorm_exp_80;
     reg signed [5:0] larger_expo_neg;
-  always@(posedge clk)
-    begin
-      c_out<=c_add;
+  reg invalid, inexact, overflow, underflow, zero;
+
+  
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            c_out <= 20'b0;
+            exception_flags <= 5'b0;
+        end else begin
+            c_out <= c_add;
+            exception_flags <= {invalid, inexact, overflow, underflow, zero};
+        end
     end
-    
     always@(*) begin
+	    invalid =1'b0;
+	    inexact = 1'b0;
+	    overflow = 1'b0;
+	    underflow = 1'b0;
+	    zero = 1'b0;
         //stage 1
      	     e1_80 = a[14:9];
     	     e2_80 = b[14:9];
@@ -164,6 +176,7 @@ module dlfloat16_add_sub(input [15:0] a, input [15:0] b,input op,output reg [19:
 	          else if (e2_80 > e1_80) begin
 		     Final_sign_80 = s2_80;
 	          end
+	       
 	          else begin
                      if (m1_80 > m2_80) begin
 			            Final_sign_80 = s1_80;		
@@ -175,26 +188,53 @@ module dlfloat16_add_sub(input [15:0] a, input [15:0] b,input op,output reg [19:
 		              Final_sign_80 = 0;
 		           end	  
                  end
-	           end
+	       end
+      
+         
+           //checking for overflow/underflow
+           if(  Larger_exp_80 == 63 & renorm_exp_80 == 1) begin //overflow
+		   overflow = 1'b1;
+             if (  Final_sign_80 ) begin
+                c_add=16'hFDFE;//largest -ve value
+		     
+             end
+             else begin
+               c_add=16'h7DFE;//largest +ve value
+             end
+  
+           end
+           else if ((Larger_exp_80 >= 1) & (Larger_exp_80 <= 8) & (renorm_exp_80 <  larger_expo_neg)) begin //underflow
+		   underflow = 1'b1;
+             if (  Final_sign_80 ) begin
+               c_add=16'h8201;//smallest -ve value
+               end
+             else begin
+               c_add=16'd513;//smallest +ve value
+             end
+            end 
+           else begin
       	   
                Final_expo_80 =  Larger_exp_80 + renorm_exp_80;
       
       	       if(Final_expo_80 == 6'b0) begin
+		       zero =1'b1;
                      c_add=16'b0;
                end
                else if( Final_expo_80 == 63) begin
                      c_add=16'hFFFF;
                end      
 	      
-      Final_mant_80 = {Add1_mant_80,2'b00}; 
+             Final_mant_80 = {Add1_mant_80,2'b00}; 
 	       
                //checking for special cases
-               if( a==16'hFFFF | b==16'hFFFF) begin
+               if( a1==16'hFFFF | b1==16'hFFFF) begin  
                  c_add = 16'hFFFF;
                end
                else begin
-                 c_add = (a==0 & b==0)?0:{Final_sign_80,Final_expo_80,Final_mant_80};
+                 c_add = (a1==0 & b1==0)?0:{Final_sign_80,Final_expo_80,Final_mant_80};
                end 
-         
+           end//for overflow/underflow 
+	    if (c_add[16:19] != 4'b0000)
+		    inexact = 1'b1;
   end //for always block 
 endmodule

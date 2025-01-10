@@ -19,10 +19,10 @@ module dlfloat16_comp (
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             c_out <= 20'b0;
-            exception_flags <= 5'b0;
+            exceptions <= 5'b0;
         end else begin
             c_out <= c_1;
-		exception_flags <= {invalid, inexact, overflow, underflow, div_zero};
+		exceptions <= {invalid, inexact, overflow, underflow, div_zero};
         end
     end
   always @(*) begin

@@ -13,7 +13,7 @@ module dlfloat16_comp (
   reg [8:0] mant1, mant2;
   reg lt, gt, eq;
   reg [15:0] c_1;
-   reg invalid, inexact, overflow, underflow, zero;
+   reg invalid, inexact, overflow, underflow, div_zero;
 
 
     always @(posedge clk or negedge rst_n) begin
@@ -22,7 +22,7 @@ module dlfloat16_comp (
             exception_flags <= 5'b0;
         end else begin
             c_out <= c_1;
-            exception_flags <= {invalid, inexact, overflow, underflow, zero};
+		exception_flags <= {invalid, inexact, overflow, underflow, div_zero};
         end
     end
   always @(*) begin
@@ -30,7 +30,7 @@ module dlfloat16_comp (
 	    inexact = 1'b0;
 	    overflow = 1'b0;
 	    underflow = 1'b0;
-	    zero = 1'b0;
+	    div_zero = 1'b0;
     // Extract fields
     s1 = a1[15];
     s2 = b1[15];
@@ -81,7 +81,7 @@ module dlfloat16_comp (
       default: c_1 = 16'b0;
     endcase
     if (c_1 == 16'h0000)
-      zero =1'b1;
+      underflow =1'b1;
     if(c_1 == 16'hffff)
       overflow = 1'b1;
   end

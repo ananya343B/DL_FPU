@@ -1,7 +1,8 @@
 // Code your design here
 module dlfloat16_sqrt (
+	input clk,rst_n,
     input  [15:0] dl_in,              
-    output reg [19:0] dl_out,         
+	output reg [19:0] dl_out_fin,         
     output reg [4:0] exception_flags  
 );
     wire sign = dl_in[15];                
@@ -24,6 +25,16 @@ reg done;              //convergence flag
    
     reg invalid, overflow, underflow, inexact;
     wire div_by_zero = 1'b0;
+
+	 always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            dl_out_fin <= 20'b0;
+            exception_flags <= 5'b0;
+        end else begin
+            dl_out_fin <= dl_out;
+		exception_flags <= {invalid, inexact, overflow, underflow, div_zero};
+        end
+    end
 
     always @(*) begin
        
@@ -98,6 +109,6 @@ reg done;              //convergence flag
         end
 
        
-        exception_flags = {invalid, inexact, overflow, underflow, div_by_zero};
+       
     end
 endmodule

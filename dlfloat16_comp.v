@@ -7,7 +7,7 @@ module dlfloat16_comp (
   input rst_n,
 	input [3:0] ena,
   output [4:0] exceptions,
-  output reg [15:0] c_out
+	output reg [31:0] c_out
 );
   reg s1, s2;
   reg [5:0] exp1, exp2;
@@ -19,10 +19,10 @@ module dlfloat16_comp (
 
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            c_out <= 20'b0;
+            c_out <= 32'b0;
             exceptions <= 5'b0;
         end else begin
-            c_out <= c_1;
+		c_out <= {16'b0,c_1};
 		exceptions <= {invalid, inexact, overflow, underflow, div_zero};
         end
     end

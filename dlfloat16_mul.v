@@ -1,7 +1,8 @@
 // Code your design here
-module dl_mult(a,b,c_mul,clk,rst_n,exception_flags);
+module dl_mult(a,b,ena,c_mul,clk,rst_n,exception_flags);
   input  [15:0]a,b;
   input clk,rst_n;
+	input [3:0] ena;
   output  reg[19:0]c_mul;
   output reg [4:0] exception_flags;
     

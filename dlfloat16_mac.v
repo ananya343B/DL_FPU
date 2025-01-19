@@ -1,5 +1,5 @@
 // Code your design here
-module dl_mac(a,b,d,c_out,ena,clk,exception_flags,rst_n);
+module dlfloat16_mac(a,b,d,c_out,ena,clk,exception_flags,rst_n);
 	input clk,rst_n; input [3:0] ena;
   input [15:0]a,b,d;
   output reg [19:0]c_out;

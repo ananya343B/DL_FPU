@@ -1,4 +1,4 @@
-module fp_round_unit ( input [19:0] in1,
+module dlfloat16_round ( input [19:0] in1,
                       input [2:0] rm,
                       input rst_n,
                       input clk,

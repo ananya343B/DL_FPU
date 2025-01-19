@@ -1,5 +1,5 @@
 // Code your design here
-module dl_decoder();
+module dlfloat16_decoder();
   input [31:0] instr;
   output [3:0] ena;
   output [2:0] rm;

@@ -1,19 +1,20 @@
 // Code your design here
-module dl_mac(a,b,d,c_out,clk,exception_flags,rst_n);
-  input clk,rst_n;
+module dl_mac(a,b,d,c_out,ena,clk,exception_flags,rst_n);
+	input clk,rst_n; input [3:0] ena;
   input [15:0]a,b,d;
   output reg [19:0]c_out;
   output reg [4:0] exception_flags;
   wire [15:0]fprod,fadd;
   reg [19:0] c_mac;
   reg [4:0] exceptions;
-  fpmac_mult mul(a,b,fprod);
-  fpmac_adder add(fprod,d,c_mac, exceptions);
+	fpmac_mult mul(a,b,fprod,ena);
+	fpmac_adder add(fprod,d,c_mac, exceptions,ena);
 always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             c_out <= 20'b0;
             exception_flags <= 5'b0;
         end else begin
+		
             c_out <= c_mac;
 		exception_flags <= exceptions;
         end
@@ -21,10 +22,10 @@ always @(posedge clk or negedge rst_n) begin
   
 endmodule 
   
-module fpmac_mult(a,b,c_mul1);
+module fpmac_mult(a,b,c_mul1,ena);
   input  [15:0]a,b;
   output  reg[15:0]c_mul1;
-    
+	input [3:0] ena;  
     reg [9:0]ma,mb; //1 extra because 1.smthng
     reg [8:0] mant;
     reg [19:0]m_temp; //after multiplication
@@ -32,6 +33,9 @@ module fpmac_mult(a,b,c_mul1);
     reg sa,sb,s;
   	
   always@(*) begin
+	  if(ena !=4'b1001)
+		  c_mul1 = 16'b0;
+	  else begin
         ma ={1'b1,a[8:0]};
         mb= {1'b1,b[8:0]};
         sa = a[15];
@@ -78,11 +82,12 @@ module fpmac_mult(a,b,c_mul1);
            c_mul1 = (a==0 | b==0) ? 0 :{s,exp,mant};
          end 
  	end 
+	  end
     end 
 	wire _unused = &{m_temp[8:0], 9'b0};
 endmodule 
  
-module fpmac_adder(input [15:0] a1, input [15:0] b1,output reg [19:0] c_add,output reg [4:0] exceptions);
+module fpmac_adder(input [15:0] a1, input [15:0] b1,output reg [19:0] c_add,output reg [4:0] exceptions, input [3:0] ena);
    
    	
     reg    [5:0] Num_shift_80; 
@@ -104,6 +109,9 @@ module fpmac_adder(input [15:0] a1, input [15:0] b1,output reg [19:0] c_add,outp
 	    overflow = 1'b0;
 	    underflow = 1'b0;
 	    div_zero = 1'b0;
+	    if(ena != 4'b1001)
+		    c_add = 20'b0;
+	    else begin
         //stage 1
      	     e1_80 = a1[14:9];
     	     e2_80 = b1[14:9];
@@ -303,5 +311,6 @@ module fpmac_adder(input [15:0] a1, input [15:0] b1,output reg [19:0] c_add,outp
       if(c_add [16:19] != 4'b0000)
         inexact = 1'b1;
       exceptions = {invalid, inexact, overflow, underflow, div_zero};
+	    end
   end //for always block 
 endmodule

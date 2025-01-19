@@ -5,6 +5,7 @@ module dlfloat16_comp (
   input [2:0] sel,
   input clk,
   input rst_n,
+	input [3:0] ena,
   output [4:0] exceptions,
   output reg [15:0] c_out
 );
@@ -31,6 +32,9 @@ module dlfloat16_comp (
 	    overflow = 1'b0;
 	    underflow = 1'b0;
 	    div_zero = 1'b0;
+	  if(ena != 4'b0110)
+		  c_1 =16'b0;
+	  else begin
     // Extract fields
     s1 = a1[15];
     s2 = b1[15];
@@ -85,7 +89,7 @@ module dlfloat16_comp (
     if(c_1 == 16'hffff)
       overflow = 1'b1;
   end
-
+  end
 
 
 endmodule

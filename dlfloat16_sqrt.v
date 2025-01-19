@@ -1,5 +1,6 @@
 // Code your design here
 module dlfloat16_sqrt (
+	input [3:0] ena,
 	input clk,rst_n,
     input  [15:0] dl_in,              
 	output reg [19:0] dl_out_fin,         
@@ -22,7 +23,7 @@ reg done;              //convergence flag
     reg [12:0] mant_sqrt;    
     integer i;
   reg [5:0] ier;
-   
+	reg [19:0] dl_out;
     reg invalid, overflow, underflow, inexact;
     wire div_by_zero = 1'b0;
 
@@ -44,6 +45,10 @@ reg done;              //convergence flag
         inexact = 0;
 		ier = 6'b0;
       mant_sqrt = 13'b0;
+	    if (ena!=4'b0100) 
+		    dl_out = 20'b0; 
+	    else begin
+	    
         //special cases
         if (dl_in == 16'h0000) begin
             // Zero input
@@ -107,7 +112,7 @@ reg done;              //convergence flag
                 dl_out = {1'b0, exp_out, mant_sqrt};
             end
         end
-
+	end
        
        
     end

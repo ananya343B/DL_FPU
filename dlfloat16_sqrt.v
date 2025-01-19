@@ -3,7 +3,7 @@ module dlfloat16_sqrt (
 	input [3:0] ena,
 	input clk,rst_n,
     input  [15:0] dl_in,              
-	output reg [19:0] dl_out_fin,         
+	output reg [31:0] dl_out_fin,         
     output reg [4:0] exception_flags  
 );
     wire sign = dl_in[15];                
@@ -29,10 +29,10 @@ reg done;              //convergence flag
 
 	 always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            dl_out_fin <= 20'b0;
+            dl_out_fin <= 32'b0;
             exception_flags <= 5'b0;
         end else begin
-            dl_out_fin <= dl_out;
+		dl_out_fin <= {12'b0,dl_out};
 		exception_flags <= {invalid, inexact, overflow, underflow, div_zero};
         end
     end

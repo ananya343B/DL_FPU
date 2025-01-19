@@ -1,5 +1,6 @@
 module float16_to_int32(
   input clk,rst_n,
+	input [3:0] ena;
   output [4:0] exceptions,
   input [15:0] float_in,
   output reg signed [31:0] int_out_fin
@@ -22,6 +23,9 @@ module float16_to_int32(
     end
   
   always @(*) begin
+	  if(ena != 4'b1000)
+		  int_out = 32'b0;
+	  else begin
     // Extract fields
     sign = float_in[15];
     exponent = float_in[14:9];
@@ -50,5 +54,6 @@ module float16_to_int32(
       if (int_out > 32'h7FFFFFFF) int_out = 32'h7FFFFFFF;
       if (int_out < -32'h80000000) int_out = -32'h80000000; 
     end
+  end
   end
 endmodule

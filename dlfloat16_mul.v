@@ -3,7 +3,7 @@ module dlfloat16_mul(a,b,ena,c_mul,clk,rst_n,exception_flags);
   input  [15:0]a,b;
   input clk,rst_n;
 	input [3:0] ena;
-  output  reg[19:0]c_mul;
+	output  reg[31:0]c_mul;
   output reg [4:0] exception_flags;
     
     reg [9:0]ma,mb; //1 extra because 1.smthng
@@ -16,10 +16,10 @@ module dlfloat16_mul(a,b,ena,c_mul,clk,rst_n,exception_flags);
 
   always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            c_mul <= 20'b0;
+            c_mul <= 32'b0;
             exception_flags <= 5'b0;
         end else begin
-            c_mul <= c_mul1;
+		c_mul <= {12'b0,c_mul1};
 		exception_flags <= {invalid, inexact, overflow, underflow, div_zero};
         end
     end

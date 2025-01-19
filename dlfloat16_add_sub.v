@@ -1,4 +1,4 @@
-module dlfloat16_add_sub(input [15:0] a, input [15:0] b,input op,output reg [19:0] c_out, input clk,input rst_n, output [4:0] exceptions);
+module dlfloat16_add_sub(input [15:0] a, input [15:0] b,input op,input [3:0] ena, output reg [19:0] c_out, input clk,input rst_n, output [4:0] exceptions);
    
   reg [19:0] c_add;
     reg    [5:0] Num_shift_80; 
@@ -36,6 +36,9 @@ module dlfloat16_add_sub(input [15:0] a, input [15:0] b,input op,output reg [19:
              m1_80 = a[8:0];
      	     m2_80 = b[8:0];
              s1_80 = a[15];
+	    if(ena != 4'b0001)
+		    c_add = 20'b0;
+	    else begin
            if(op) begin
              s2_80 = ~b[15]; //for subtraction op will be 1
            end
@@ -236,5 +239,6 @@ module dlfloat16_add_sub(input [15:0] a, input [15:0] b,input op,output reg [19:
            end//for overflow/underflow 
 	    if (c_add[16:19] != 4'b0000)
 		    inexact = 1'b1;
+	    end
   end //for always block 
 endmodule

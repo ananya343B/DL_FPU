@@ -3,7 +3,7 @@ module dlfloat16_sign_inv (
   input [15:0] in2,  
   input [1:0] sel,
   input clk,rst_n
-  output reg [15:0] out,
+	output reg [31:0] out,
 	output reg [4:0] exceptions,
 	 input [3:0] ena
 );
@@ -26,10 +26,10 @@ module dlfloat16_sign_inv (
 always @(posedge clk or negedge rst_n) begin
   exceptions <= 5'b0;
         if (!rst_n) begin
-            out <= 16'b0;
+            out <= 32'b0;
             
         end else begin
-            out <= out_comb;
+		out <= {16'b0,out_comb};
 		
         end
     end

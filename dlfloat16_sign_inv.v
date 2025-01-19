@@ -4,11 +4,15 @@ module invert_sign (
   input [1:0] sel,
   input clk,rst_n
   output reg [15:0] out,
-  output reg [4:0] exceptions
+	output reg [4:0] exceptions,
+	 input [3:0] ena
 );
   reg [15:0] out_comb;
 
   always @(*) begin
+	  if(ena !=4'b0101)
+		  out_comb = 16'b0;
+	  else begin
     case (sel)
       2'b00: out_comb = {~in1[15], in1[14:0]}; // invert
       2'b01: out_comb = {in1[15], in2[14:0]};  // sign injection normalized
@@ -16,6 +20,7 @@ module invert_sign (
       2'b11: out_comb = {in1[15] ^ in2[15], in2[14:0]}; // sign injection xor
       default: out_comb = 16'h0000;
     endcase
+  end
   end
 
 always @(posedge clk or negedge rst_n) begin

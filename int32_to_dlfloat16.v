@@ -1,4 +1,4 @@
-module fp_int2float(
+module int32_to_dlfloat16(
   input signed [31:0] in_int, 
   input clk,rst_n,
   input [3:0] ena,

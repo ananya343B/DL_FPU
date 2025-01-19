@@ -1,6 +1,7 @@
 module fp_int2float(
   input signed [31:0] in_int, 
   input clk,rst_n,
+  input [3:0] ena,
   output [4:0] exceptions,
   output reg [15:0] float_out1  
 );
@@ -22,6 +23,9 @@ module fp_int2float(
     end
        
     always @(*) begin
+      if(ena != 4'b0111)
+        float_out = 16'b0;
+      else begin
       if (in_int == 32'b0) begin
         float_out = 16'b0;
       end
@@ -54,5 +58,6 @@ module fp_int2float(
       
       float_out = {sign,exponent,mantissa};
       end 
+    end
     
 endmodule

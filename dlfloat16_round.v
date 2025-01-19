@@ -1,4 +1,4 @@
-module dlfloat16_round ( input [31:0] in,
+module dlfloat16_round ( input [31:0] in, input [3:0] ena,
                       input [2:0] rm,
                       input rst_n,
                       input clk,
@@ -16,7 +16,10 @@ module dlfloat16_round ( input [31:0] in,
     if(!rst_n) begin
       out<= 32'b0;
     end else begin
+      if(ena !=4'b1000)
       out <= {16'h0000,out1}; 
+      else
+        out <= in;
     end
   end
     always@(*) begin 

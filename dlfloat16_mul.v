@@ -1,5 +1,5 @@
 // Code your design here
-module dl_mult(a,b,ena,c_mul,clk,rst_n,exception_flags);
+module dlfloat16_mul(a,b,ena,c_mul,clk,rst_n,exception_flags);
   input  [15:0]a,b;
   input clk,rst_n;
 	input [3:0] ena;

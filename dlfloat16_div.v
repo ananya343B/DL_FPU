@@ -3,7 +3,7 @@ module dlfloat16_div(
     input [3:0] ena,
     input [15:0] a, b,
     input clk, rst_n,
-    output reg [19:0] c_div,         // 1-bit sign, 6-bit exponent, 13-bit mantissa
+    output reg [31:0] c_div,         // 1-bit sign, 6-bit exponent, 13-bit mantissa
     output reg [4:0] exception_flags 
 );
     reg [9:0] ma, mb;       
@@ -18,10 +18,10 @@ module dlfloat16_div(
 
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            c_div <= 20'b0;
+            c_div <= 32'b0;
             exception_flags <= 5'b0;
         end else begin
-            c_div <= c_div1;
+            c_div <= {12'b0,c_div1};
             exception_flags <= {invalid, inexact, overflow, underflow, div_by_zero};
         end
     end

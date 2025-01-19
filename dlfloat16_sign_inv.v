@@ -1,4 +1,4 @@
-module invert_sign (
+module dlfloat16_sign_inv (
   input [15:0] in1, 
   input [15:0] in2,  
   input [1:0] sel,

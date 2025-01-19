@@ -10,7 +10,7 @@ module dl_mult(a,b,c_mul,clk,rst_n,exception_flags);
     reg [19:0]m_temp; //after multiplication
     reg [5:0] ea,eb,e_temp,exp;
     reg sa,sb,s;
-  reg [19:0] c_mul1;
+  reg [19:0] mul1;
 	reg invalid, inexact, overflow, underflow, div_zero;
 
   always @(posedge clk or negedge rst_n) begin
@@ -18,7 +18,7 @@ module dl_mult(a,b,c_mul,clk,rst_n,exception_flags);
             c_mul <= 20'b0;
             exception_flags <= 5'b0;
         end else begin
-            c_mul <= mul1;
+            c_mul <= c_mul1;
 		exception_flags <= {invalid, inexact, overflow, underflow, div_zero};
         end
     end
@@ -42,7 +42,11 @@ module dl_mult(a,b,c_mul,clk,rst_n,exception_flags);
   	mant=9'b0;
   	exp= 6'b0;
   	s=0;
-  	
+	  if(ena !=4'b0010)
+		  c_mul1 =20'b0;
+	  else begin
+
+		  
   	//checking for underflow/overflow
     if (  (ea + eb) <= 31 ) begin
       underflow = 1'b1;
@@ -78,8 +82,9 @@ module dl_mult(a,b,c_mul,clk,rst_n,exception_flags);
            c_mul1 = (a==0 | b==0) ? 0 :{s,exp,mant};
          end 
  	end 
-    if(mul1[16:19] != 4'b0000)
+	  if(c_mul1[16:19] != 4'b0000)
       inexact = 1'b1;
     end 
+  end
 	wire _unused = &{m_temp[8:0], 9'b0};
 endmodule 

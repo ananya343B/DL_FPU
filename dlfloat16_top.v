@@ -1,5 +1,5 @@
 // Code your design here
-module dl_top();
+module dlfloat16_top();
   input [31:0] instr;
   input [31:0] op1,op2,op3;
   output invalid, inexact, overflow,underflow, div_by_zero;

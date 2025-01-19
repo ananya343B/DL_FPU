@@ -1,4 +1,4 @@
-module float16_to_int32(
+module dlfloat16_to_int32(
   input clk,rst_n,
 	input [3:0] ena;
   output [4:0] exceptions,

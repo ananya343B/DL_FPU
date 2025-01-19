@@ -1,4 +1,4 @@
-module dlfloat16_add_sub(input [15:0] a, input [15:0] b,input op,input [3:0] ena, output reg [19:0] c_out, input clk,input rst_n, output [4:0] exceptions);
+module dlfloat16_add_sub(input [15:0] a, input [15:0] b,input op,input [3:0] ena, output reg [31:0] c_out, input clk,input rst_n, output [4:0] exceptions);
    
   reg [19:0] c_add;
     reg    [5:0] Num_shift_80; 
@@ -17,10 +17,10 @@ module dlfloat16_add_sub(input [15:0] a, input [15:0] b,input op,input [3:0] ena
   
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            c_out <= 20'b0;
+            c_out <= 32'b0;
             exceptions <= 5'b0;
         end else begin
-            c_out <= c_add;
+		c_out <= {12'b0,c_add};
 		exceptions <= {invalid, inexact, overflow, underflow, div_zero};
         end
     end

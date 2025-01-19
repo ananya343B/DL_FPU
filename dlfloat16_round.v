@@ -1,4 +1,4 @@
-module dlfloat16_round ( input [19:0] in1,
+module dlfloat16_round ( input [31:0] in,
                       input [2:0] rm,
                       input rst_n,
                       input clk,
@@ -11,7 +11,7 @@ module dlfloat16_round ( input [19:0] in1,
   reg [9:0] mant1;
   reg [8:0] mant;
   reg [2:0] rm1;
-  
+  reg [19:0] in1;
   always@(posedge clk or negedge rst_n) begin
     if(!rst_n) begin
       out<= 32'b0;
@@ -19,7 +19,8 @@ module dlfloat16_round ( input [19:0] in1,
       out <= {16'h0000,out1}; 
     end
   end
-    always@(*) begin   
+    always@(*) begin 
+      in1 = in [19:0];
       G_bit  = in1[3];
       R_bit  = in1[2];
       S1_bit = in1[1];

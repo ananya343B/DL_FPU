@@ -4,6 +4,7 @@ module dl_top();
   input [31:0] op1,op2,op3;
   output invalid, inexact, overflow,underflow, div_by_zero;
   output [31:0] result;
+  input clk,rst_n;
   
   wire [3:0] ena;
   wire [2:0] rm;

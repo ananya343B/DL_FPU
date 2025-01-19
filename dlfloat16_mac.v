@@ -2,7 +2,7 @@
 module dlfloat16_mac(a,b,d,c_out,ena,clk,exception_flags,rst_n);
 	input clk,rst_n; input [3:0] ena;
   input [15:0]a,b,d;
-  output reg [19:0]c_out;
+	output reg [31:0]c_out;
   output reg [4:0] exception_flags;
   wire [15:0]fprod,fadd;
   reg [19:0] c_mac;
@@ -11,11 +11,11 @@ module dlfloat16_mac(a,b,d,c_out,ena,clk,exception_flags,rst_n);
 	fpmac_adder add(fprod,d,c_mac, exceptions,ena);
 always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            c_out <= 20'b0;
+            c_out <= 32'b0;
             exception_flags <= 5'b0;
         end else begin
 		
-            c_out <= c_mac;
+		c_out <= {12'b0, c_mac};
 		exception_flags <= exceptions;
         end
     end

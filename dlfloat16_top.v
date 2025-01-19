@@ -34,6 +34,6 @@ module dlfloat16_top();
   
   out_mux(.ena(ena), .out_add_sub(out_add_sub), .out_mul(out_mul), .out_div(out_div), .out_mac(out_mac), .out_sqrt(out_sqrt), .out_sign(out_sign), .out_i2f(out_i2f), .out_comp(out_comp), out_f2i(out_f2i), .out_muxed(out_muxed));
   
-  dlfloat16_round(.rm(rm), .ena(ena), .out_muxed(out_muxed) , .result(result));
+  dlfloat16_round(.rm(rm), .ena(ena), .out_muxed(out_muxed) , .result(result),.clk(clk),.rst_n(rst_n));
   
 endmodule

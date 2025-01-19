@@ -3,7 +3,7 @@ module int32_to_dlfloat16(
   input clk,rst_n,
   input [3:0] ena,
   output [4:0] exceptions,
-  output reg [15:0] float_out1  
+  output reg [31:0] float_out1  
 );
     reg [5:0] exponent;   
     reg [8:0] mantissa;    
@@ -13,10 +13,10 @@ module int32_to_dlfloat16(
     integer i;
    always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            float_out1 <= 16'b0;
+            float_out1 <= 32'b0;
             exceptions <= 5'b0;
         end else begin
-            float_out1 <= float_out;
+          float_out1 <= {16'b0,float_out};
           if(in_int>512)
             exceptions = 5'b01000;
         end

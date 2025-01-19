@@ -46,9 +46,9 @@ module dl_decoder();
             8'b00101001: begin ena = 4'b0110;
               sel2 = 3'b010;//max
             end
-            8'b01000xxx:begin ena = 4'b0111;
+            8'b01000xxx:begin ena = 4'b0111; //int to float
             end
-            8'b01001xxx:begin ena = 4'b1000;end
+            8'b01001xxx:begin ena = 4'b1000;end//float to int
             8'b10100010: begin ena = 4'b0110;//eq
               sel2 = 3'b011; end
             8'b10100001: begin ena = 4'b0110;// less than

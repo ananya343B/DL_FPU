@@ -1,5 +1,6 @@
 
 module dlfloat16_div(
+    input [3:0] ena,
     input [15:0] a, b,
     input clk, rst_n,
     output reg [19:0] c_div,         // 1-bit sign, 6-bit exponent, 13-bit mantissa
@@ -45,7 +46,9 @@ module dlfloat16_div(
         overflow = 1'b0;
         inexact = 1'b0;
         invalid = 1'b0;
-
+        if(ena != 4'b0011)
+            c_div1 = 20'b0;
+        else begin
         // Special Cases
       if(( b == 16'b0 || b==16'b1000000000000000) &&(a==16'b0 || a==16'b1000000000000000))
             begin
@@ -102,6 +105,7 @@ module dlfloat16_div(
             end else begin
                 c_div1 = {s, exp, mant};
             end
+        end
         end
     end
 endmodule

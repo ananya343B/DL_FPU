@@ -57,12 +57,12 @@ module dlfloat16_decoder();
               sel2 = 3'b101; end
           endcase
         end
-      else(opcode ==7'bxxxxxxx)//fma
+      else if(opcode ==7'b0011011)//fma
         begin
           ena = 4'b1001;
           op = 1'b0;
         end
-      else(opcode == 7'bxxxxxxx)//fms
+      else if(opcode == 7'b0111011)//fms
         begin 
           ena = 4'b1001;
           op = 1'b1;
